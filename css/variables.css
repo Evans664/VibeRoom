@@ -1,0 +1,21 @@
+:root {
+  --color-bg: #090b0a;
+  --color-surface: #131715;
+  --color-surface-raised: #1b201d;
+  --color-border: #2b332f;
+  --color-text: #f4f7f4;
+  --color-muted: #9ba69f;
+  --color-accent: #a8f23d;
+  --color-accent-strong: #c1ff68;
+  --color-accent-ink: #0c1209;
+  --shadow-accent: 0 0 42px rgba(168, 242, 61, 0.16);
+  --radius-card: 18px;
+  --radius-pill: 999px;
+  --content-width: 1080px;
+  --space-1: 0.5rem;
+  --space-2: 0.75rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 3rem;
+}

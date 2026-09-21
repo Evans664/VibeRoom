@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+  <title id="title">VibeRoom cover placeholder</title>
+  <desc id="desc">Abstract green and charcoal album artwork.</desc>
+  <rect width="400" height="400" fill="#131715"/>
+  <circle cx="205" cy="190" r="130" fill="#a8f23d" opacity=".9"/>
+  <circle cx="205" cy="190" r="72" fill="#090b0a"/>
+  <path d="M55 318c78-54 174-57 290-4" fill="none" stroke="#f4f7f4" stroke-width="8" opacity=".8"/>
+</svg>

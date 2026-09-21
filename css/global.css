@@ -1,0 +1,25 @@
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: Georgia, 'Times New Roman', serif;
+  line-height: 1.5;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(circle at 50% 0%, rgba(168, 242, 61, 0.08), transparent 38rem);
+  content: '';
+  pointer-events: none;
+}
+
+a { color: inherit; }
+
+:focus-visible { outline: 3px solid var(--color-accent-strong); outline-offset: 4px; }

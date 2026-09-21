@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Foundation state: no client access until each collection has reviewed rules.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

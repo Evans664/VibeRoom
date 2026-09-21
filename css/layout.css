@@ -1,0 +1,18 @@
+.welcome-shell {
+  display: grid;
+  min-height: 100svh;
+  place-items: center;
+  padding: var(--space-4);
+}
+
+.welcome-panel {
+  width: min(100%, 620px);
+  padding: clamp(2rem, 7vw, 5rem) clamp(1.25rem, 6vw, 4rem);
+  text-align: center;
+}
+
+.page-shell { width: min(100% - 2rem, var(--content-width)); margin: 0 auto; padding: 2rem 0; }
+
+@media (min-width: 700px) {
+  .welcome-shell { padding: var(--space-6); }
+}
