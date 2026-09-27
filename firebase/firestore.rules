@@ -2,7 +2,44 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Foundation state: no client access until each collection has reviewed rules.
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profiles & preferences (owned by individual user)
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Playlists (owned by creator, read if public or owned)
+    match /playlists/{playlistId} {
+      allow read: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || resource.data.isPublic == true);
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid;
+      allow update, delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+    }
+
+    // Liked songs (user-specific subcollection)
+    match /likes/{userId}/songs/{songId} {
+      allow read, write, delete: if isOwner(userId);
+    }
+
+    // Recently played track history (user-specific subcollection)
+    match /recentlyPlayed/{userId}/tracks/{trackId} {
+      allow read, write, delete: if isOwner(userId);
+    }
+
+    // Saved albums (user-specific subcollection)
+    match /savedAlbums/{userId}/albums/{albumId} {
+      allow read, write, delete: if isOwner(userId);
+    }
+
+    // Catch-all deny rule for any unspecified collections
     match /{document=**} {
       allow read, write: if false;
     }
