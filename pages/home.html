@@ -68,6 +68,30 @@
         </div>
       </section>
     </main>
+
+    <footer class="player-bar" data-player aria-label="Music player">
+      <div class="player-track">
+        <strong data-player-title>No track selected</strong>
+        <span data-player-artist></span>
+      </div>
+      <div class="player-controls">
+        <button type="button" class="player-button" data-player-shuffle aria-pressed="false">Shuffle</button>
+        <button type="button" class="player-button" data-player-previous aria-label="Previous song">Previous</button>
+        <button type="button" class="player-button player-toggle" data-player-toggle aria-label="Play or pause">Play</button>
+        <button type="button" class="player-button" data-player-next aria-label="Next song">Next</button>
+        <button type="button" class="player-button" data-player-repeat aria-pressed="false">Repeat</button>
+      </div>
+      <div class="player-progress">
+        <span data-player-current-time>0:00</span>
+        <input type="range" min="0" max="0" value="0" step="0.1" data-player-progress aria-label="Song progress">
+        <span data-player-duration>0:00</span>
+      </div>
+      <label class="player-volume">
+        <span>Volume</span>
+        <input type="range" min="0" max="1" value="1" step="0.01" data-player-volume>
+      </label>
+      <p class="visually-hidden" data-player-status aria-live="polite">Nothing playing</p>
+    </footer>
   </div>
   <script type="module" src="../js/app.js"></script>
 </body>

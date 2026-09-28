@@ -11,6 +11,7 @@ export function renderSongList(songs) {
         <span class="song-meta">${escapeHtml(song.artist)} · ${escapeHtml(song.album)}</span>
       </div>
       <time datetime="PT${song.duration}S" aria-label="Duration ${formatDuration(song.duration)}">${formatDuration(song.duration)}</time>
+      <button type="button" class="song-play-button" data-action="play-song" data-song-id="${escapeHtml(song.id)}" aria-label="Play ${escapeHtml(song.title)}">Play</button>
     </li>
   `).join('');
   return `<ol class="song-list">${rows}</ol>`;
