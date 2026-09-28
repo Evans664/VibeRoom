@@ -2,6 +2,36 @@ import { getFirebase } from './firebase-client.js';
 import { auth } from './auth-service.js';
 
 const LOCAL_PLAYLISTS_KEY = 'viberoom_local_playlists';
+const LOCAL_ID_PREFIX = 'local_pl_';
+const MAX_SONGS = 500;
+
+function playlistError(code, message) {
+  const error = new Error(message);
+  error.code = code;
+  return error;
+}
+
+function toPlaylistError(err) {
+  if (err?.code?.startsWith('playlists/')) return err;
+  if (err?.code === 'permission-denied') {
+    return playlistError('playlists/forbidden', 'You do not have access to this playlist.');
+  }
+  console.error('Unexpected playlist error:', err);
+  return playlistError('playlists/unknown', 'Something went wrong with your playlist. Please try again.');
+}
+
+// Shape defined in docs/contracts/PLAYLISTS.md.
+function normalizePlaylist(id, data) {
+  return {
+    id,
+    ownerId: data.ownerId,
+    name: data.name,
+    description: data.description || '',
+    songIds: Array.isArray(data.songIds) ? [...data.songIds] : [],
+    createdAt: data.createdAt,
+    updatedAt: data.updatedAt
+  };
+}
 
 function getLocalPlaylists() {
   try {
@@ -20,153 +50,163 @@ function saveLocalPlaylists(lists) {
   }
 }
 
+function isLocalId(id) {
+  return String(id).startsWith(LOCAL_ID_PREFIX);
+}
+
+// Firebase is used only for signed-in users; guests keep local-only playlists.
+async function getRemote() {
+  const fb = await getFirebase();
+  return fb.isAvailable && fb.auth.currentUser ? fb : null;
+}
+
+async function updateSongIds(playlistId, change) {
+  if (!playlistId) throw playlistError('playlists/invalid', 'Playlist ID is required.');
+
+  const fb = isLocalId(playlistId) ? null : await getRemote();
+  if (fb) {
+    try {
+      const { doc, getDoc, updateDoc } = fb.firestoreModules;
+      const ref = doc(fb.db, 'playlists', playlistId);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) throw playlistError('playlists/not-found', 'Playlist not found.');
+      const current = normalizePlaylist(snap.id, snap.data());
+      const songIds = change(current.songIds);
+      const updatedAt = new Date().toISOString();
+      await updateDoc(ref, { songIds, updatedAt });
+      return { ...current, songIds, updatedAt };
+    } catch (err) {
+      throw toPlaylistError(err);
+    }
+  }
+
+  const localLists = getLocalPlaylists();
+  const target = localLists.find((p) => p.id === playlistId);
+  if (!target) throw playlistError('playlists/not-found', 'Playlist not found.');
+  target.songIds = change(target.songIds || []);
+  target.updatedAt = new Date().toISOString();
+  saveLocalPlaylists(localLists);
+  return normalizePlaylist(target.id, target);
+}
+
 export const playlists = {
   /**
-   * Fetch all playlists owned by the current user
+   * Fetch all playlists owned by the current user (or local guest playlists)
    */
   async getMine() {
     const user = auth.getCurrentUser();
-    if (!user) return getLocalPlaylists();
-
-    const fb = await getFirebase();
-    if (fb.isAvailable && fb.auth.currentUser) {
+    const fb = user ? await getRemote() : null;
+    if (fb) {
       try {
         const { collection, query, where, getDocs } = fb.firestoreModules;
         const q = query(collection(fb.db, 'playlists'), where('ownerId', '==', user.id));
         const snap = await getDocs(q);
-        return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+        return snap.docs.map((d) => normalizePlaylist(d.id, d.data()));
       } catch (err) {
         console.warn('Failed to fetch playlists from Firestore, falling back to local:', err);
       }
     }
 
-    return getLocalPlaylists().filter((p) => p.ownerId === user.id || !p.ownerId);
+    const ownerId = user ? user.id : 'guest';
+    return getLocalPlaylists()
+      .filter((p) => p.ownerId === ownerId)
+      .map((p) => normalizePlaylist(p.id, p));
   },
 
   /**
-   * Fetch a single playlist by ID
+   * Fetch a single playlist by ID, or null
    */
   async getById(id) {
     if (!id) return null;
 
-    const fb = await getFirebase();
-    if (fb.isAvailable) {
+    const fb = isLocalId(id) ? null : await getFirebase();
+    if (fb?.isAvailable) {
       try {
         const { doc, getDoc } = fb.firestoreModules;
         const snap = await getDoc(doc(fb.db, 'playlists', id));
-        if (snap.exists()) {
-          return { id: snap.id, ...snap.data() };
-        }
+        return snap.exists() ? normalizePlaylist(snap.id, snap.data()) : null;
       } catch (err) {
+        if (err?.code === 'permission-denied') return null;
         console.warn('Failed to get playlist from Firestore:', err);
       }
     }
 
-    const localLists = getLocalPlaylists();
-    return localLists.find((p) => p.id === id) || null;
+    const local = getLocalPlaylists().find((p) => p.id === id);
+    return local ? normalizePlaylist(local.id, local) : null;
   },
 
   /**
    * Create a new playlist
    */
-  async create({ name, description = '' }) {
-    if (!name || !name.trim()) throw new Error('Playlist name is required.');
+  async create({ name, description = '' } = {}) {
+    if (!name || !name.trim()) throw playlistError('playlists/invalid', 'Playlist name is required.');
     const user = auth.getCurrentUser();
+    const now = new Date().toISOString();
 
     const newPlaylist = {
+      ownerId: user ? user.id : 'guest',
       name: name.trim(),
       description: description.trim(),
-      ownerId: user ? user.id : 'guest',
-      trackIds: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      songIds: [],
+      createdAt: now,
+      updatedAt: now
     };
 
-    const fb = await getFirebase();
-    if (fb.isAvailable && fb.auth.currentUser && user) {
-      const { collection, addDoc } = fb.firestoreModules;
-      const docRef = await addDoc(collection(fb.db, 'playlists'), newPlaylist);
-      return { id: docRef.id, ...newPlaylist };
+    const fb = user ? await getRemote() : null;
+    if (fb) {
+      try {
+        const { collection, addDoc } = fb.firestoreModules;
+        const docRef = await addDoc(collection(fb.db, 'playlists'), newPlaylist);
+        return normalizePlaylist(docRef.id, newPlaylist);
+      } catch (err) {
+        throw toPlaylistError(err);
+      }
     }
 
-    const localLists = getLocalPlaylists();
-    const localItem = {
-      id: 'local_pl_' + Date.now().toString(36),
-      ...newPlaylist
-    };
-    localLists.push(localItem);
-    saveLocalPlaylists(localLists);
-    return localItem;
+    const localItem = { id: LOCAL_ID_PREFIX + Date.now().toString(36), ...newPlaylist };
+    saveLocalPlaylists([...getLocalPlaylists(), localItem]);
+    return normalizePlaylist(localItem.id, localItem);
   },
 
   /**
-   * Add a track ID to a playlist
+   * Add a song ID to a playlist; resolves to the updated playlist
    */
   async addTrack(playlistId, songId) {
-    if (!playlistId || !songId) throw new Error('Playlist ID and Song ID are required.');
-
-    const fb = await getFirebase();
-    if (fb.isAvailable && fb.auth.currentUser) {
-      const { doc, updateDoc, arrayUnion } = fb.firestoreModules;
-      await updateDoc(doc(fb.db, 'playlists', playlistId), {
-        trackIds: arrayUnion(songId),
-        updatedAt: new Date().toISOString()
-      });
-      return true;
-    }
-
-    const localLists = getLocalPlaylists();
-    const target = localLists.find((p) => p.id === playlistId);
-    if (!target) throw new Error('Playlist not found.');
-    if (!target.trackIds.includes(songId)) {
-      target.trackIds.push(songId);
-      target.updatedAt = new Date().toISOString();
-      saveLocalPlaylists(localLists);
-    }
-    return true;
+    if (!songId) throw playlistError('playlists/invalid', 'Song ID is required.');
+    return updateSongIds(playlistId, (songIds) => {
+      if (songIds.includes(songId)) return songIds;
+      if (songIds.length >= MAX_SONGS) {
+        throw playlistError('playlists/full', `A playlist can hold at most ${MAX_SONGS} songs.`);
+      }
+      return [...songIds, songId];
+    });
   },
 
   /**
-   * Remove a track ID from a playlist
+   * Remove a song ID from a playlist; resolves to the updated playlist
    */
   async removeTrack(playlistId, songId) {
-    if (!playlistId || !songId) throw new Error('Playlist ID and Song ID are required.');
-
-    const fb = await getFirebase();
-    if (fb.isAvailable && fb.auth.currentUser) {
-      const { doc, updateDoc, arrayRemove } = fb.firestoreModules;
-      await updateDoc(doc(fb.db, 'playlists', playlistId), {
-        trackIds: arrayRemove(songId),
-        updatedAt: new Date().toISOString()
-      });
-      return true;
-    }
-
-    const localLists = getLocalPlaylists();
-    const target = localLists.find((p) => p.id === playlistId);
-    if (!target) throw new Error('Playlist not found.');
-    target.trackIds = target.trackIds.filter((id) => id !== songId);
-    target.updatedAt = new Date().toISOString();
-    saveLocalPlaylists(localLists);
-    return true;
+    if (!songId) throw playlistError('playlists/invalid', 'Song ID is required.');
+    return updateSongIds(playlistId, (songIds) => songIds.filter((id) => id !== songId));
   },
 
   /**
    * Delete a playlist
    */
   async delete(playlistId) {
-    if (!playlistId) throw new Error('Playlist ID is required.');
+    if (!playlistId) throw playlistError('playlists/invalid', 'Playlist ID is required.');
 
-    const fb = await getFirebase();
-    if (fb.isAvailable && fb.auth.currentUser) {
-      const { doc, deleteDoc } = fb.firestoreModules;
-      await deleteDoc(doc(fb.db, 'playlists', playlistId));
-      return true;
+    const fb = isLocalId(playlistId) ? null : await getRemote();
+    if (fb) {
+      try {
+        const { doc, deleteDoc } = fb.firestoreModules;
+        await deleteDoc(doc(fb.db, 'playlists', playlistId));
+        return;
+      } catch (err) {
+        throw toPlaylistError(err);
+      }
     }
 
-    const localLists = getLocalPlaylists();
-    const filtered = localLists.filter((p) => p.id !== playlistId);
-    saveLocalPlaylists(filtered);
-    return true;
+    saveLocalPlaylists(getLocalPlaylists().filter((p) => p.id !== playlistId));
   }
 };

@@ -61,10 +61,11 @@ export const userService = {
       }
     }
 
-    const updated = { ...user, ...fields };
-    if (auth.setCurrentUser) {
-      auth.setCurrentUser(updated);
+    // Only displayName belongs on the auth user object; everything else stays in the profile.
+    if (fields.displayName) {
+      auth.setCurrentUser({ ...user, displayName: fields.displayName });
     }
+    const updated = { ...getLocalData(user.id, 'profile', user), ...fields };
     setLocalData(user.id, 'profile', updated);
     return updated;
   },

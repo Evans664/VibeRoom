@@ -12,6 +12,12 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == userId;
     }
 
+    // Mirrors docs/contracts/PLAYLISTS.md: at most 500 song IDs per playlist.
+    function isValidPlaylist(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.songIds is list && data.songIds.size() <= 500;
+    }
+
     // User profiles & preferences (owned by individual user)
     match /users/{userId} {
       allow read, write: if isOwner(userId);
@@ -20,8 +26,12 @@ service cloud.firestore {
     // Playlists (owned by creator, read if public or owned)
     match /playlists/{playlistId} {
       allow read: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || resource.data.isPublic == true);
-      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid;
-      allow update, delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.ownerId == request.auth.uid
+        && isValidPlaylist(request.resource.data);
+      allow update: if isAuthenticated() && resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerId == resource.data.ownerId
+        && isValidPlaylist(request.resource.data);
+      allow delete: if isAuthenticated() && resource.data.ownerId == request.auth.uid;
     }
 
     // Liked songs (user-specific subcollection)
