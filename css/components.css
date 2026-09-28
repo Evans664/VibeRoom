@@ -166,7 +166,7 @@
 .song-list { margin: 0; padding: 0; list-style: none; }
 .song-row {
   display: grid;
-  grid-template-columns: 1.5rem 3rem minmax(0, 1fr) auto;
+  grid-template-columns: 1.5rem 3rem minmax(0, 1fr) auto auto;
   gap: var(--space-3);
   align-items: center;
   padding: var(--space-2);
@@ -178,6 +178,19 @@
 .song-title, .song-meta { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .song-title { font-weight: 600; }
 .song-meta, .song-row time { color: var(--color-muted); font-size: 0.85rem; }
+
+.song-play-button {
+  min-width: 4.25rem;
+  padding: 0.4rem 0.9rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.song-play-button:hover { border-color: var(--color-accent); color: var(--color-accent); }
 
 /* ---------- Search ---------- */
 .search-field { position: relative; margin-top: var(--space-4); }
@@ -192,6 +205,52 @@
 }
 .search-field input::placeholder { color: var(--color-muted); }
 .search-field input:focus-visible { border-color: var(--color-accent); outline: none; box-shadow: 0 0 0 4px rgba(46, 232, 114, 0.18); }
+
+.search-status { min-height: 1.2em; margin: 0 0 var(--space-2); color: var(--color-muted); font-size: 0.85rem; }
+
+/* ---------- Player bar ---------- */
+.player-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: 'track controls' 'progress progress';
+  gap: 0.35rem var(--space-3);
+  align-items: center;
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-surface-raised);
+  border-top: 1px solid var(--color-border);
+}
+.player-track { grid-area: track; min-width: 0; }
+.player-track strong, .player-track span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.player-track span { color: var(--color-muted); font-size: 0.8rem; }
+.player-controls { grid-area: controls; display: flex; gap: 0.35rem; }
+.player-button {
+  padding: 0.4rem 0.7rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.player-button:disabled { opacity: 0.45; cursor: default; }
+.player-button[aria-pressed='true'] { border-color: var(--color-accent); color: var(--color-accent); }
+.player-toggle { border-color: transparent; background: var(--gradient-accent); color: var(--color-accent-ink); }
+.player-progress { grid-area: progress; display: flex; gap: var(--space-2); align-items: center; color: var(--color-muted); font-size: 0.75rem; }
+.player-progress input { flex: 1; accent-color: var(--color-accent); }
+.player-volume { display: none; }
+[data-player-shuffle], [data-player-repeat] { display: none; }
+
+@media (min-width: 900px) {
+  .player-bar {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    grid-template-areas: 'track controls volume' 'track progress volume';
+    padding: var(--space-2) var(--space-4);
+  }
+  .player-volume { grid-area: volume; display: flex; gap: var(--space-2); justify-self: end; align-items: center; color: var(--color-muted); font-size: 0.8rem; }
+  .player-volume input { accent-color: var(--color-accent); }
+  [data-player-shuffle], [data-player-repeat] { display: inline-block; }
+}
 
 /* ---------- States: loading / empty / error ---------- */
 .state {

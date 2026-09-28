@@ -30,12 +30,13 @@ player.toggleShuffle()
 player.toggleRepeat()   // cycles "off" -> "all" -> "one" -> "off"
 player.subscribe(callback)
 player.getState()
+player.setQueue(tracks, startIndex)
 ```
 
 `subscribe(callback)` calls `callback` immediately with the current state, then on every change, and returns an unsubscribe function. `getState()` returns a copy; mutating it has no effect.
 
 The implementation should use one browser `Audio` instance. Pages subscribe to state and issue commands; they must not create independent audio players. Temporary queue, volume, and playback position remain local unless a future decision explicitly justifies persistence.
 
-## Proposed (not yet agreed)
+`setQueue(tracks, startIndex)` replaces the queue so a page can play a list (album, search results) rather than a single track; `next()` and `previous()` move through it. Call it before `play(track)`.
 
-`player.setQueue(tracks, startIndex)` so a page can play a list (album, search results) rather than a single track. Emmanuel to confirm before implementing; see `docs/decisions/2026-09-25-contract-review.md`.
+The implementation lives in `js/player/player.js`.
