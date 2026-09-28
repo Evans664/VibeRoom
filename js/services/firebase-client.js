@@ -5,6 +5,9 @@
  * so services can operate in local/mock mode without breaking the app.
  */
 
+// One SDK version for the whole app; bump it here only.
+export const FIREBASE_SDK_BASE = 'https://www.gstatic.com/firebasejs/12.19.0';
+
 let initPromise = null;
 let initializedState = {
   isAvailable: false,
@@ -35,11 +38,11 @@ export async function getFirebase() {
         return initializedState;
       }
 
-      // 2. Load modular Firebase v10 SDK from official Google CDN
+      // 2. Load the modular Firebase SDK from the official Google CDN
       const [appMod, authMod, firestoreMod] = await Promise.all([
-        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
-        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
-        import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+        import(`${FIREBASE_SDK_BASE}/firebase-app.js`),
+        import(`${FIREBASE_SDK_BASE}/firebase-auth.js`),
+        import(`${FIREBASE_SDK_BASE}/firebase-firestore.js`)
       ]);
 
       const app = appMod.initializeApp(config);

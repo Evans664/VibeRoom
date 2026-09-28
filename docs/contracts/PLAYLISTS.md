@@ -27,6 +27,6 @@ playlists.delete(playlistId)
 
 Timestamps are ISO strings, not Firestore `Timestamp` objects. `getMine()` returns an array (possibly empty). `getById()` returns a playlist or `null`. Mutating methods resolve to the updated playlist (`delete` resolves to `undefined`).
 
-Methods return normalized playlist objects and predictable errors (`Error` with a `code` such as `playlists/not-configured`, `playlists/not-found`, `playlists/forbidden`). A playlist belongs to its authenticated owner; guest users may use a local-only playlist implementation if that feature is offered.
+Methods return normalized playlist objects and predictable errors (`Error` with a `code`: `playlists/invalid`, `playlists/not-found`, `playlists/forbidden`, `playlists/full`, `playlists/unknown`). A playlist belongs to its authenticated owner; guest users may use a local-only playlist implementation if that feature is offered.
 
 Store song IDs and small metadata rather than full song objects. Reads should be explicit and limited; writes should happen only after a user action. A playlist holds at most 500 song IDs to keep documents small.
