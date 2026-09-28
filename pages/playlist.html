@@ -1,1 +1,59 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>VibeRoom | Playlist</title></head><body><main class="page-shell"><h1>Playlist</h1><p>Playlist page shell. Persistence will follow the playlist contract.</p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050807">
+  <title>VibeRoom | Playlist</title>
+  <link rel="icon" href="../assets/icons/logo-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app-shell">
+    <header class="app-header">
+      <a class="brand" href="../index.html" aria-label="VibeRoom welcome page">
+        <img src="../assets/icons/logo-mark.svg" alt="">
+        <span class="brand-word">Vibe<span>Room</span></span>
+      </a>
+      <span class="mode-chip">Guest mode</span>
+    </header>
+
+    <nav class="app-nav" aria-label="Primary">
+      <a class="nav-link" href="home.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="nav-link" href="search.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>Search</span>
+      </a>
+      <a class="nav-link" href="library.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 4v16M10 4v16M15 5l4.5 15"/></svg>
+        <span>Library</span>
+      </a>
+    </nav>
+
+    <main id="main" class="app-main">
+      <section class="page-section" aria-labelledby="playlist-title">
+        <p class="eyebrow">Playlist</p>
+        <h1 id="playlist-title" class="page-title">Playlist</h1>
+      </section>
+
+      <section class="page-section" aria-label="Playlist details" data-playlist-detail>
+        <div class="state state-empty">
+          <h3>Nothing to show yet</h3>
+          <p>Playlists arrive with accounts. Pick something from Home in the meantime.</p>
+          <a class="button button-outline" href="home.html">Back to Home</a>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
