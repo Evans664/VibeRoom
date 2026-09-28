@@ -9,6 +9,8 @@ const playerState = {
   repeat: 'off'
 };
 
+const REPEAT_CYCLE = { off: 'all', all: 'one', one: 'off' };
+
 const listeners = new Set();
 
 export const player = {
@@ -21,7 +23,7 @@ export const player = {
   seek(time) { playerState.currentTime = time; notify(); },
   setVolume(volume) { playerState.volume = Math.max(0, Math.min(1, volume)); notify(); },
   toggleShuffle() { playerState.shuffle = !playerState.shuffle; notify(); },
-  toggleRepeat() { playerState.repeat = playerState.repeat === 'off' ? 'all' : 'off'; notify(); }
+  toggleRepeat() { playerState.repeat = REPEAT_CYCLE[playerState.repeat] ?? 'off'; notify(); }
 };
 
 function notify() { listeners.forEach((callback) => callback(player.getState())); }
