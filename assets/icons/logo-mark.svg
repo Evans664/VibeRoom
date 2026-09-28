@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 48" role="img" aria-labelledby="logo-title">
+  <title id="logo-title">VibeRoom</title>
+  <defs>
+    <linearGradient id="logo-a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6cf79c"/>
+      <stop offset="1" stop-color="#16c75a"/>
+    </linearGradient>
+    <linearGradient id="logo-b" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b6ffcf"/>
+      <stop offset="1" stop-color="#2ee872"/>
+    </linearGradient>
+  </defs>
+  <path d="M3 6h12l12 34h-11z" fill="url(#logo-a)"/>
+  <path d="M22 22l6-16h11l-11 34z" fill="url(#logo-b)" opacity=".85"/>
+  <path d="M33 22l6-16h11l-11 34z" fill="url(#logo-a)"/>
+  <path d="M45 6h16l-9 14h-11z" fill="url(#logo-b)"/>
+</svg>
