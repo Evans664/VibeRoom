@@ -1,6 +1,8 @@
 # Local Firebase configuration
 js/config/firebase-config.js
 .firebase/
+firebase-debug.log
+firestore-debug.log
 
 # OS/editor files
 .DS_Store

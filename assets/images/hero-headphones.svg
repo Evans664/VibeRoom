@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380" role="img" aria-labelledby="hero-title hero-desc">
+  <title id="hero-title">Glowing headphones</title>
+  <desc id="hero-desc">Dark over-ear headphones with green rim light, surrounded by a green sound waveform.</desc>
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+    <radialGradient id="floor" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#2ee872" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#2ee872" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#2ee872" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#2ee872" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cup" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1f2622"/>
+      <stop offset="1" stop-color="#050807"/>
+    </linearGradient>
+    <linearGradient id="band" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#232b27"/>
+      <stop offset="1" stop-color="#0a0d0c"/>
+    </linearGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1fd466" stop-opacity=".28"/>
+      <stop offset="1" stop-color="#1fd466" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ambient light and landscape -->
+  <ellipse cx="300" cy="190" rx="260" ry="170" fill="url(#halo)"/>
+  <path d="M0 250 C120 200 200 300 300 300 C400 300 480 210 600 230 V380 H0 Z" fill="url(#hill)"/>
+  <path d="M0 250 C120 200 200 300 300 300 C400 300 480 210 600 230" fill="none" stroke="#2ee872" stroke-opacity=".45" stroke-width="1.5"/>
+  <path d="M0 290 C140 260 220 330 320 325 C430 320 500 270 600 280" fill="none" stroke="#2ee872" stroke-opacity=".2" stroke-width="1"/>
+
+  <!-- waveform -->
+  <g stroke="#3df07f" stroke-linecap="round" stroke-width="4" filter="url(#glow)">
+    <path d="M70 180v20M86 170v40M102 160v60M118 176v28M134 146v88M150 164v52M166 130v120M182 152v76M198 170v40"/>
+    <path d="M402 170v40M418 152v76M434 130v120M450 164v52M466 146v88M482 176v28M498 160v60M514 170v40M530 180v20"/>
+  </g>
+
+  <!-- floor glow -->
+  <ellipse cx="300" cy="330" rx="170" ry="16" fill="url(#floor)" filter="url(#soft)"/>
+
+  <!-- headband -->
+  <path d="M218 214 C212 92 388 92 382 214" fill="none" stroke="url(#band)" stroke-width="24" stroke-linecap="round"/>
+  <path d="M206 200 C204 78 396 78 394 200" fill="none" stroke="#2ee872" stroke-width="2" stroke-opacity=".75" filter="url(#glow)"/>
+
+  <!-- left cup -->
+  <g>
+    <rect x="200" y="196" width="22" height="46" rx="8" fill="#141917"/>
+    <ellipse cx="220" cy="248" rx="50" ry="68" fill="url(#cup)"/>
+    <ellipse cx="220" cy="248" rx="50" ry="68" fill="none" stroke="#2ee872" stroke-width="3" filter="url(#glow)"/>
+    <ellipse cx="220" cy="248" rx="34" ry="50" fill="#0b0f0d" stroke="#1d2621" stroke-width="3"/>
+    <path d="M204 236h6l6 16 4-10h5l-8 24h-4z M221 236h5l-3 8z" fill="#2ee872" opacity=".85"/>
+  </g>
+
+  <!-- right cup -->
+  <g>
+    <rect x="378" y="196" width="22" height="46" rx="8" fill="#141917"/>
+    <ellipse cx="380" cy="248" rx="50" ry="68" fill="url(#cup)"/>
+    <ellipse cx="380" cy="248" rx="50" ry="68" fill="none" stroke="#2ee872" stroke-width="3" filter="url(#glow)"/>
+    <ellipse cx="380" cy="248" rx="34" ry="50" fill="#0b0f0d" stroke="#1d2621" stroke-width="3"/>
+    <ellipse cx="380" cy="248" rx="20" ry="30" fill="none" stroke="#2ee872" stroke-opacity=".35" stroke-width="2"/>
+  </g>
+</svg>

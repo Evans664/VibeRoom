@@ -2,9 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="VibeRoom, a music space by The Dev Room.">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="VibeRoom, a music space by The Dev Room. Discover, stream and enjoy your favorite music in one place.">
+  <meta name="theme-color" content="#050807">
   <title>VibeRoom | Welcome</title>
+  <link rel="icon" href="assets/icons/logo-mark.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="css/variables.css">
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/layout.css">
@@ -13,15 +18,25 @@
 <body>
   <main class="welcome-shell">
     <section class="welcome-panel" aria-labelledby="welcome-title">
-      <div class="brand-mark" aria-label="VibeRoom home"><span>VR</span></div>
-      <p class="eyebrow">THE DEV ROOM PRESENTS</p>
-      <h1 id="welcome-title">Welcome to VibeRoom</h1>
-      <p class="welcome-copy">Find your next repeat, build a room around your mood, and keep the music moving.</p>
-      <div class="waveform" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="welcome-actions">
-        <a class="button button-primary" href="pages/home.html">Get started</a>
-        <a class="button button-secondary" href="pages/home.html">Continue as guest</a>
+      <div class="brand brand-lg">
+        <img src="assets/icons/logo-mark.svg" alt="">
+        <span class="brand-word">Vibe<span>Room</span></span>
       </div>
+      <p class="tagline" aria-label="Music, vibes, you"><span>Music</span><span>Vibes</span><span>You</span></p>
+
+      <img class="hero-art" src="assets/images/hero-headphones.svg" alt="" width="600" height="380">
+
+      <h1 id="welcome-title" class="welcome-title">Welcome to <span class="text-accent">VibeRoom</span></h1>
+      <p class="welcome-copy">Discover, stream and enjoy your favorite music — all in one place. VibeRoom is your personal space for the sounds you love.</p>
+
+      <div class="welcome-actions">
+        <a class="button button-primary button-lg" href="pages/auth.html">
+          Get Started
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a class="button button-outline" href="pages/home.html">Continue as Guest</a>
+      </div>
+
       <p class="built-by">Built by The Dev Room</p>
     </section>
   </main>
