@@ -16,9 +16,11 @@ This repository is at the foundation stage. It contains the project structure, c
 
 ## Start locally
 
-Open `index.html` in a browser, or serve the folder with any static file server. No install step or build step is required.
+Serve the folder with any static file server and open it in the browser, for example `python -m http.server 8000` then http://localhost:8000, or VS Code's Live Server extension. Opening `index.html` directly from disk does not work, because browsers block JavaScript modules on `file://` pages. No install step or build step is required.
 
-Frontend work should use `js/data/mock-music.js` and the documented contracts before Firebase is connected.
+Sign-in, liked songs and playlists need `js/config/firebase-config.js`. It is git-ignored, so ask Evans for the file and place it in `js/config/`. Without it the app still runs in guest mode, and music, search and albums all work.
+
+The catalog streams live from the public [Audius API](https://docs.audius.org) through `js/services/music-service.js` (no key needed). For offline work, build against `js/data/mock-music.js` and the documented contracts.
 
 ## Read first
 

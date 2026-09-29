@@ -40,20 +40,27 @@
       </a>
     </nav>
 
-    <main id="main" class="app-main">
-      <section class="page-section" aria-labelledby="album-title">
-        <p class="eyebrow">Album</p>
-        <h1 id="album-title" class="page-title">Album</h1>
+    <main id="main" class="app-main" data-album-page>
+      <section class="page-section playlist-hero" aria-labelledby="album-title">
+        <img class="playlist-hero-art" src="../assets/images/cover-placeholder.svg" alt="" data-album-cover>
+        <div class="playlist-hero-text">
+          <p class="eyebrow">Album</p>
+          <h1 id="album-title" class="page-title" data-album-title>Loading…</h1>
+          <p class="page-lead" data-album-meta></p>
+          <div class="actions" data-album-actions>
+            <button type="button" class="button button-primary" data-album-play disabled>Play</button>
+          </div>
+        </div>
       </section>
 
-      <section class="page-section" aria-label="Album details" data-album-detail>
-        <div class="state state-empty">
-          <h3>Nothing to show yet</h3>
-          <p>Album pages are on the way. Browse albums from Home in the meantime.</p>
-          <a class="button button-outline" href="home.html">Back to Home</a>
+      <section class="page-section" aria-label="Songs on this album">
+        <div data-album-songs>
+          <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
         </div>
       </section>
     </main>
+    <footer class="player-bar" data-player aria-label="Music player"></footer>
   </div>
+  <script type="module" src="../js/app.js"></script>
 </body>
 </html>

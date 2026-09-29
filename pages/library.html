@@ -40,22 +40,35 @@
       </a>
     </nav>
 
-    <main id="main" class="app-main">
+    <main id="main" class="app-main" data-library>
       <section class="page-section" aria-labelledby="library-title">
-        <p class="eyebrow">Guest mode</p>
+        <p class="eyebrow" data-library-eyebrow>Your music</p>
         <h1 id="library-title" class="page-title">Your Library</h1>
-        <p class="page-lead">Playlists, liked songs and saved albums live here.</p>
+        <p class="page-lead">Your playlists and liked songs, all in one place.</p>
       </section>
 
-      <section class="page-section" aria-labelledby="saved-title">
-        <h2 id="saved-title" class="visually-hidden">Saved music</h2>
-        <div class="state state-empty">
-          <h3>Your library is empty</h3>
-          <p>Saving playlists, likes and albums arrives with accounts. Until then, guest mode keeps the music playing.</p>
-          <a class="button button-outline" href="search.html">Browse music</a>
+      <section class="page-section" aria-labelledby="playlists-title">
+        <div class="section-heading">
+          <h2 id="playlists-title" class="section-title">Playlists</h2>
+          <button type="button" class="button button-outline button-sm" data-create-playlist>New playlist</button>
+        </div>
+        <div class="playlist-grid" data-playlist-grid>
+          <div class="skeleton skeleton-card"></div><div class="skeleton skeleton-card"></div>
+        </div>
+      </section>
+
+      <section class="page-section" aria-labelledby="liked-title">
+        <div class="section-heading">
+          <h2 id="liked-title" class="section-title">Liked Songs</h2>
+          <span class="section-meta" data-liked-count></span>
+        </div>
+        <div data-liked-list>
+          <div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div><div class="skeleton skeleton-row"></div>
         </div>
       </section>
     </main>
+    <footer class="player-bar" data-player aria-label="Music player"></footer>
   </div>
+  <script type="module" src="../js/app.js"></script>
 </body>
 </html>
