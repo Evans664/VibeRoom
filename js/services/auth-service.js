@@ -29,7 +29,8 @@ const FIREBASE_CODES = {
   'auth/missing-password': 'auth/invalid-credentials',
   'auth/email-already-in-use': 'auth/email-in-use',
   'auth/weak-password': 'auth/weak-password',
-  'auth/network-request-failed': 'auth/network'
+  'auth/network-request-failed': 'auth/network',
+  'auth/operation-not-allowed': 'auth/not-configured'
 };
 
 function authError(code) {
@@ -41,6 +42,7 @@ function authError(code) {
 function toAuthError(err) {
   const code = FIREBASE_CODES[err?.code] || 'auth/unknown';
   if (code === 'auth/unknown') console.error('Unexpected auth error:', err);
+  if (err?.code === 'auth/operation-not-allowed') console.error('Enable Email/Password sign-in in the Firebase console (Authentication > Sign-in method).');
   return authError(code);
 }
 
@@ -73,13 +75,18 @@ async function requireFirebase() {
 }
 
 // The only Firebase auth listener; subscribers are notified through setActiveUser.
-getFirebase().then((fb) => {
-  if (!fb.isAvailable) return;
+// readyPromise resolves once Firebase has restored any saved session (or immediately without Firebase).
+const readyPromise = getFirebase().then((fb) => new Promise((resolve) => {
+  if (!fb.isAvailable) {
+    resolve();
+    return;
+  }
   activeFirebase = fb;
   fb.authModules.onAuthStateChanged(fb.auth, (fbUser) => {
     setActiveUser(normalizeFirebaseUser(fbUser));
+    resolve();
   });
-});
+}));
 
 export const auth = {
   /**
@@ -162,6 +169,13 @@ export const auth = {
    */
   setCurrentUser(user) {
     setActiveUser(user);
+  },
+
+  /**
+   * Resolves once the saved session (if any) has been restored; await before reading user data.
+   */
+  ready() {
+    return readyPromise;
   },
 
   /**

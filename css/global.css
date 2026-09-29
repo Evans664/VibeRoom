@@ -27,6 +27,8 @@ h1, h2, h3 { margin: 0; line-height: 1.1; letter-spacing: -0.02em; }
 
 img, svg { display: block; max-width: 100%; }
 
+[hidden] { display: none !important; }
+
 a { color: inherit; }
 
 button, input { font: inherit; color: inherit; }

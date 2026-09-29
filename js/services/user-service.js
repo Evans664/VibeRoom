@@ -82,7 +82,10 @@ export const userService = {
       try {
         const { collection, getDocs } = fb.firestoreModules;
         const snap = await getDocs(collection(fb.db, 'likes', user.id, 'songs'));
-        return snap.docs.map((d) => d.id);
+        return snap.docs
+          .map((d) => ({ id: d.id, likedAt: d.data().likedAt || '' }))
+          .sort((a, b) => b.likedAt.localeCompare(a.likedAt))
+          .map((like) => like.id);
       } catch (err) {
         console.warn('Failed to fetch liked songs from Firestore:', err);
       }

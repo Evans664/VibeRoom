@@ -10,6 +10,7 @@ auth.register(email, password, profile)
 auth.logout()
 auth.getCurrentUser()
 auth.onAuthStateChanged(callback)
+auth.ready()                    // resolves once a saved session has been restored
 ```
 
 `login` and `register` resolve to a normalized user object or reject with a user-safe error. `getCurrentUser` returns a user object or `null`. The listener returns an unsubscribe function.
